@@ -2,7 +2,7 @@ import processing.serial.*;
 Serial myPort;
 String val;
 
-int score;
+int SPEED = 10;
 int lines;
 int[][] board;
 int gridWidth;
@@ -109,7 +109,6 @@ void reset(){
       board[x][y] = 0;
     }
   }
-  score = 0;
   lines = 0;
   pendingshape = new Tetromino();
   pendingshape.initialize();
@@ -234,7 +233,6 @@ boolean lineTest() {
 
 void processLine(int lines) {
   lines++;
-  score++;
    for (int y = lines - 1; y>= 0; y--) {
      for (int x = 0; x < gridWidth; x++) {
        board[y + 1][x] = board[y][x];
@@ -352,7 +350,7 @@ void draw() {
  if (counter%slowness == 0) {
     updateBoard();
  }
- if (counter > 10) counter = 0;
+ if (counter > SPEED) counter = 0;
  displayGrid();
 }
 
