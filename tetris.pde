@@ -3,7 +3,6 @@ Serial myPort;
 String val;
 
 int score;
-int lines;
 int[][] board;
 int gridWidth;
 int gridHeight;
@@ -14,6 +13,7 @@ Tetromino pendingshape;
 
 void setup()
 {
+ myPort = new Serial(this, Serial.list()[0], 9600); 
  noStroke();
  size(250, 500);
  // set grid size
@@ -28,6 +28,7 @@ void setup()
 class Tetromino {
   int rotation;
   int[][] shape;
+  int type;
   public int x, y;
   
   int[][][] shapes = 
@@ -317,8 +318,6 @@ void displayGrid() {
 }
 int counter = 0;
 
-
-
 void draw() {
  background(0);
  frameRate(30);
@@ -350,3 +349,5 @@ void keyPressed() {
     moveDown();
   }
 }
+
+void serialEvent ( 
