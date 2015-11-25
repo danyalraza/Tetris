@@ -11,6 +11,7 @@ int cellSize = 25;
 boolean usedSave = false;
 Tetromino activeshape;
 Tetromino pendingshape;
+Tetromino savedshape;
 
 
 void setup()
@@ -29,6 +30,7 @@ void setup()
 
 class Tetromino {
   int rotation;
+  int type;
   int[][] shape;
   public int x, y;
   
@@ -54,6 +56,7 @@ class Tetromino {
    void initialize() {
      int newblock = (int) floor(random(shapes.length));
      int rotations = floor(4);
+     this.type = newblock;
      this.shape = this.shapes[newblock];
      for (int i = 0; i < rotations; i++) {
        this.rotate();  
@@ -97,6 +100,8 @@ class Tetromino {
 }
 
 void reset(){
+  savedshape = null;
+  myPort.write (-1);
   for (int x = 0; x < gridWidth; x ++) {
     for (int y = 0; y < gridHeight; y ++) {
       board[x][y] = 0;
@@ -110,14 +115,17 @@ void reset(){
 }
 
 void save() {
-  Tetromino temp = activeshape;
-  pendingshape = new Tetromino();
-  pendingshape.initialize();
-  if(pendingshape == activeshape) {
-    pendingshape.initialize();
+  if (savedshape == null) {
+   savedshape = activeshape;
+   addshape();
+  } else {
+      Tetromino t = savedshape;
+      savedshape = activeshape;
+      activeshape = t;
+      t.x = gridWidth / 2 - 2;
+      t.y = 0;
   }
-  addshape();
-  pendingshape = temp;
+  myPort.write (savedshape.type);
 }
   
 void addshape() {
@@ -126,6 +134,7 @@ void addshape() {
   activeshape.y = 0;
   pendingshape = new Tetromino();
   pendingshape.initialize();
+  myPort.write (pendingshape.type);
   //if (iscollision(activeshape)){
   //  reset();
   //}
