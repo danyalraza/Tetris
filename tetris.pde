@@ -7,7 +7,7 @@ int lines;
 int[][] board;
 int gridWidth;
 int gridHeight;
-int cellSize = 25;
+int cellSize = 35;
 boolean usedSave = false;
 String inString;
 Tetromino activeshape;
@@ -18,9 +18,9 @@ Tetromino savedshape;
 void setup()
 {
  noStroke();
- myPort = new Serial(this, "COM6", 9600);
+ myPort = new Serial(this, Serial.list()[2], 9600);
  myPort.bufferUntil(10);
- size(250, 500);
+ size(350, 700);
  // set grid size
  gridWidth = floor(width/cellSize);
  gridHeight = floor(height/cellSize);
@@ -103,7 +103,7 @@ class Tetromino {
 
 void reset(){
   savedshape = null;
-  myPort.write (-1);
+  myPort.write (-1+'b');
   for (int x = 0; x < gridWidth; x ++) {
     for (int y = 0; y < gridHeight; y ++) {
       board[x][y] = 0;
@@ -127,7 +127,7 @@ void save() {
       t.x = gridWidth / 2 - 2;
       t.y = 0;
   }
-  myPort.write (savedshape.type);
+  myPort.write (savedshape.type+'b');
 }
   
 void addshape() {
@@ -136,7 +136,7 @@ void addshape() {
   activeshape.y = 0;
   pendingshape = new Tetromino();
   pendingshape.initialize();
-  myPort.write (pendingshape.type+10);
+  myPort.write (pendingshape.type+7+'b');
   //if (iscollision(activeshape)){
   //  reset();
   //}
@@ -383,15 +383,19 @@ void keyPressed() {
 }
 
 void serialEvent(Serial p) {
-  String n = p.readString();
+  
+  String n = p.readStringUntil('\n');
+  //n.trim();
   System.out.println(n);
-  if (n.charAt(1) == '8') moveLeft();
-  if (n.charAt(1) == '9') moveRight();
-  if (n.charAt(1) == '0') rotateShape();
-  if (n.charAt(1) == '1') {
+  if (n.charAt(0) == '.') {
+  if (n.charAt(1) == '0') moveLeft();
+  if (n.charAt(1) == '1') moveRight();
+  if (n.charAt(1) == '2') rotateShape();
+  if (n.charAt(1) == '3') {
   if(!usedSave) {
       save();
       usedSave = true;
     }
+  }
   }
 }

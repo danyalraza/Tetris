@@ -53,7 +53,8 @@ void launchpadInit() {
 void buttonSend(int button, int i){
   if (button && !old_state[i]){
     current_state[i] = 1;
-    Serial.println(i);
+    Serial.print(".");
+    Serial.println (i);
   } else if (!button) {
     current_state[i] = 0;
   }
@@ -243,46 +244,85 @@ void drawFrame() {
   OrbitOledUpdate();
 }
 
+byte next = -1;
+byte saved = -1;
 
 void loop() {
   // send data only when you receive data:
 	if (Serial.available() > 0) {
-              byte in = Serial.read();
+         OrbitOledClear();
+              byte in = Serial.read() - 'b';
+              
+              if (in == 255) {
+                saved = -1;
+                next = -1; 
+              }
+              else {
+               if (in <7) {
+                saved = in;
+               } else {
+                next = in % 7; 
+               }
+              }
+              
+                Serial.println (in);
 
-              if (in == -1){
-                OrbitOledClear();
-                drawFrame();
-     } else {
-             OrbitOledClear();
-                drawFrame();
-		switch(in%10) {
+		switch(saved) {
                   case 0: // straight line
-                    draw4x1(in/10);
+                    draw4x1(1);
                     break;
                   case 1: // sq
-                    draw2x2(in/10);
+                    draw2x2(1);
                     break;
                   case 2: // T
-                    drawT (in/10);
+                    drawT (1);
                     break; 
                   case 3: // L1
-                    drawL1 (in/10);
+                    drawL2 (1);
                     break;
                     
                   case 4: // L2
-                    drawL2 (in/10);
+                    drawL1 (1);
                     break;
                   
                   case 5: // Z1
-                    drawZ1 (in/10);
+                    drawZ1 (1);
                     break;
                     
                   case 6:
-                    drawZ2 (in/10);
+                    drawZ2 (1);
                     break;
                 }
-              }
+                
+                switch(next) {
+                  case 0: // straight line
+                    draw4x1(0);
+                    break;
+                  case 1: // sq
+                    draw2x2(0);
+                    break;
+                  case 2: // T
+                    drawT (0);
+                    break; 
+                  case 3: // L1
+                    drawL2 (0);
+                    break;
+                    
+                  case 4: // L2
+                    drawL1 (0);
+                    break;
+                  
+                  case 5: // Z1
+                    drawZ1 (0);
+                    break;
+                    
+                  case 6:
+                    drawZ2 (0);
+                    break;
+                }
+              
 	}
+  
   drawFrame();
   int leftButton = !digitalRead(PUSH1);
   int rightButton = !digitalRead(PUSH2);
