@@ -239,10 +239,7 @@ void drawFrame() {
   OrbitOledMoveTo(62, 0); // 128/2 centre of screen
   OrbitOledPutBmp(5, 32, SEPERATOR); 
   OrbitOledMoveTo(73, 0);
-  if (Serial.available() > 0) {
-    if (Serial.read() == 40)
-    OrbitOledPutString("N");
-  }
+  OrbitOledPutString("N");
   OrbitOledUpdate();
 }
 
@@ -256,6 +253,8 @@ void loop() {
                 OrbitOledClear();
                 drawFrame();
      } else {
+             OrbitOledClear();
+                drawFrame();
 		switch(in%10) {
                   case 0: // straight line
                     draw4x1(in/10);
@@ -280,7 +279,7 @@ void loop() {
                     
                   case 6:
                     drawZ2 (in/10);
-                    break
+                    break;
                 }
               }
 	}
