@@ -9,6 +9,7 @@ int gridWidth;
 int gridHeight;
 int cellSize = 25;
 boolean usedSave = false;
+String inString;
 Tetromino activeshape;
 Tetromino pendingshape;
 Tetromino savedshape;
@@ -17,7 +18,8 @@ Tetromino savedshape;
 void setup()
 {
  noStroke();
- myPort = new Serial(this, "COM00", 9600);
+ myPort = new Serial(this, "COM6", 9600);
+ myPort.bufferUntil(10);
  size(250, 500);
  // set grid size
  gridWidth = floor(width/cellSize);
@@ -380,9 +382,16 @@ void keyPressed() {
   }
 }
 
-void serialEvent() {
-  int method = int(myPort.readStringUntil('\n'));
-  if (method == 0) moveLeft();
-  if (method == 1) moveRight();
-  if (method == 2) rotateShape();
+void serialEvent(Serial p) {
+  String n = p.readString();
+  System.out.println(n);
+  if (n.charAt(1) == '8') moveLeft();
+  if (n.charAt(1) == '9') moveRight();
+  if (n.charAt(1) == '0') rotateShape();
+  if (n.charAt(1) == '1') {
+  if(!usedSave) {
+      save();
+      usedSave = true;
+    }
+  }
 }
