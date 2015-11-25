@@ -251,29 +251,38 @@ void loop() {
   // send data only when you receive data:
 	if (Serial.available() > 0) {
               byte in = Serial.read();
-      
+
+              if (in == -1){
+                OrbitOledClear();
+                drawFrame();
+     } else {
 		switch(in%10) {
                   case 0: // straight line
                     draw4x1(in/10);
                     break;
                   case 1: // sq
-                  
+                    draw2x2(in/10);
                     break;
                   case 2: // T
-                  
+                    drawT (in/10);
                     break; 
                   case 3: // L1
+                    drawL1 (in/10);
                     break;
                     
                   case 4: // L2
+                    drawL2 (in/10);
                     break;
                   
                   case 5: // Z1
+                    drawZ1 (in/10);
                     break;
                     
                   case 6:
+                    drawZ2 (in/10);
                     break
                 }
+              }
 	}
   drawFrame();
   int leftButton = !digitalRead(PUSH1);

@@ -136,7 +136,7 @@ void addshape() {
   activeshape.y = 0;
   pendingshape = new Tetromino();
   pendingshape.initialize();
-  myPort.write (pendingshape.type);
+  myPort.write (pendingshape.type+10);
   //if (iscollision(activeshape)){
   //  reset();
   //}
