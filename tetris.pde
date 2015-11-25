@@ -7,6 +7,7 @@ int[][] board;
 int gridWidth;
 int gridHeight;
 int cellSize = 25;
+boolean usedSave = false;
 Tetromino activeshape;
 Tetromino pendingshape;
 
@@ -106,6 +107,17 @@ void reset(){
   pendingshape = new Tetromino();
   pendingshape.initialize();
   addshape();
+}
+
+void save() {
+  Tetromino temp = activeshape;
+  pendingshape = new Tetromino();
+  pendingshape.initialize();
+  if(pendingshape == activeshape) {
+    pendingshape.initialize();
+  }
+  addshape();
+  pendingshape = temp;
 }
   
 void addshape() {
@@ -294,6 +306,7 @@ boolean moveDown() {
     activeshape.y--;
     shapeFall();
     addshape();
+    usedSave = false; 
     return false;
   }
   return true;
@@ -342,6 +355,12 @@ void keyReleased() {
   }
   if (keyCode == UP)
     rotateShape();
+  if (key == 'c') {
+    if(!usedSave) {
+      save();
+      usedSave = true;
+    }
+  }
 }
 
 void keyPressed() {
